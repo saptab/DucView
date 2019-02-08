@@ -60,7 +60,7 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
     private javax.swing.JPanel mainPanel;
     private static final String eol = System.getProperty("line.separator");
     private static final String titleString = "DucView v. 1.5";
-    private static final String helpAbout = "v. 1.5 (c) 2019\nPennsylvania State University\nnlp.at.pennstate@gmail.com\n--------------------\nv. 1.4 (c) 2005\nColumbia University\nss1792@cs.columbia.edu\n--------------------\nFor help on using DucView, visit:\nhttp://www1.cs.columbia.edu/~ani/DUC2005/DUCView/\n--------------------\nTo view annotation guidelines, visit:\nhttp://www1.cs.columbia.edu/~becky/DUC2006/2006-pyramid-guidelines.html";
+    private static final String helpAbout = "v. 1.5 (c) 2019\nPennsylvania State University\nnlp.at.pennstate@gmail.com\n--------------------\nv. 1.4 (c) 2005\nColumbia University\nss1792@cs.columbia.edu\n--------------------\nFor help on using DucView, visit:\nhttp://www1.cs.columbia.edu/~ani/DUC2005/DUCView/\n--------------------\nTo view annotation guidelines, visit:\nhttp://personal.psu.edu/rjp49/DUC2006/2006-pyramid-guidelines.html";
     private static final String[] XMLScoreTags = {"totalscu", "uniquescu", "scusNotInPyr", "totalWeight", "maxScoreTotalscu", "qualityScore"}; // XML tags for peer annotation score
     private static final String[] optionalXMLScoreTags = {"averagescu", "maxScoreAveragescu", "coverageScore", "comprehensiveScore"}; // XML tags that only are only included when startDocumentPatternStr is not null
     protected int[] pyramidReferenceTextPaneHighlightIndexes = null;
@@ -1210,15 +1210,23 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
     }
 
     /**
-     * This function generates XML containing the following fields, as specified in XMLScoreTags:
+     * This function generates XML containing the following fields, as specified in XMLScoreTags and optionalXMLScoreTags:
      *
+     * XMLScoreTags: always present
+     *
+     * "totalscu": the total number of SCUs found in the peer summary
      * "uniquescu": the number of unique SCUs from the pyramid that were found in the peer summary
      * "scusNotInPyr": the number of SCUs from the pyramid that were not found in the peer summary
-     * "scuswMultContributors": the number of SCUs in the pyramid with multiple contributors found in the peer summary
-     * "totalscu": the total number of SCUs found in the peer summary
      * "totalWeight": the total weight of SCUs found in the peer summary
-     * "maxScore": the max possible score given the total weight and number of SCUs in the peer summary
-     * "peerScore": the score of the peer summary
+     * "maxScoreTotalscu": the max possible score given the total weight and number of SCUs in the peer summary
+     * "qualityScore": score representing the quality of the SCUs in the peer summary
+     *
+     * optionalXMLScoreTags: present in the score when the RegEx delimiting model summaries is specified
+     *
+     * "averagescu": the average number of SCUs in the model summaries
+     * "maxScoreAveragescu": the max possible score given the total weight and average number of SCUs in the model summaries
+     * "coverageScore": score representing the coverage of the SCUs in the peer summary
+     * "comprehensiveScore": the harmonic mean of the quality score and the coverage score
      *
      * Regex is used to match only strings inside <b></b> HTML tags, since the getScore function formats the
      * score in an HTML table with the above score elements between the <b></b> tags.
