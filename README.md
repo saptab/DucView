@@ -1,5 +1,5 @@
 # DucView
-DucView is a tool for creating and using pyramids. <br />
+DucView is a tool for creating and using pyramids, a method for summary content annotation. <br />
 A pyramid is a model predicting the distribution of information content in summaries. Various summaries of the
 same source material will typically have some content that overlaps, and some content that does not. The pyramid
 ranks the importance of each content unit based on the frequency in "wise crowd" or "model" summaries (summaries judged to
@@ -13,9 +13,8 @@ Create pyramids and export them in XML. <br />
 Annotate and score peer summaries and export them in XML.
 
 ## How to use?
-First, refer to the [Pyramid Annotation Instructions](http://www1.cs.columbia.edu/~becky/DUC2006/instructions.html)
-and the [Peer Annotation Instructions](http://www1.cs.columbia.edu/~becky/DUC2006/peer-instructions.html)
-for guides on annotating pyramids and peer summaries, respectively.<br />
+First, refer to the [Annotation Instructions](http://personal.psu.edu/rjp49/DUC2006/2006-pyramid-guidelines.html)
+for guides on annotating pyramids and peer summaries.<br />
 
 DUCView is an annotation tool that has had two uses: the creation of pyramids from model summaries, and the annotation of peer summaries against an existing pyramid.
 
@@ -27,7 +26,7 @@ To start creating a new pyramid, select File > Pyramid > New. Select either a fo
 Now you can begin annotating each model summary according to the pyramid annotation guidelines to create the pyramid.
 The model summaries appear on the left, and the pyramid on the right pane.
 To create an SCU (content unit) highlight text on the left pane and press the "New SCU" button.
-If other model summaries have a similar SCU, highlight the SCU in the pyramid and click "Add Contributor" to note the overlap.
+If other model summaries have a similar SCU, highlight the SCU in the pyramid and click "Add Contributor" to note the overlap of the SCUs.
 An explanation of all buttons is listed in the "Buttons" section.
 Annotate as much of the model summaries as possible, and then save the pyramid in an XML format as a .pyr file using File > Pyramid > Save. <br />
 
@@ -71,3 +70,30 @@ The XML contains the pyramid, the peer annotation, and the score of the peer sum
 - Comment: For user notes on SCUs or contributors; appears in the SCU tree as an asterisk on SCU or contributor labels; visible by mousing over the asterisk.
 #### Shortcuts:
 - Many buttons and drop down menu items can be accessed using key shortcuts consisting of ALT + KEY, where KEY is the underlined letter on the button or menu item. For instance, ALT + N will work as the "New SCU" button.
+
+## API
+This section contains an overview of the most important classes in the project and their functions. <br />
+
+#### DucView
+- Contains the main function and calls all the other classes
+- Provides GUI functions using the Swing Java library
+- Parses and creates XML files, defines the DTD
+- Calculates peer summary scores
+#### SCU
+- Defines an SCU with an ID, label, and a comment
+#### SCUContributor
+- Defines an SCU contributor - a portion of the text from a summary that makes up an SCU
+- Includes a list of the contributor's SCUContributorParts, which may be non-adjacent in the text
+#### SCUContributorPart
+- Defines a part of an SCU contributor
+- Includes the starting and ending indices of the SCU contributor in the summary, as well as the text
+#### SCUTextPane
+- Defines the left, center, and right panes of DucView
+- Includes functions for displaying and selecting text
+#### SCUTree
+- Defines a tree for the SCUs in a pyramid or a peer annotation
+- Includes functions for obtaining, ordering, comparing, selecting, highlighting, dragging, scrolling, and dropping SCUs
+#### SearchDialog
+- Enables searching of text and SCU labels
+#### ScoreDialog
+- Displays the HTML of a summary's score, generated in the DucView class
