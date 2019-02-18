@@ -88,7 +88,9 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
         this.currentTextSize = new javax.swing.JTextPane().getFont().getSize();
 
 
-        contentPane.registerKeyboardAction(this, "find", javax.swing.KeyStroke.getKeyStroke(70, 2), 2);
+        contentPane.registerKeyboardAction(this, "find", javax.swing.KeyStroke.getKeyStroke(70, 2), 2); // Ctrl + F shortcut
+        contentPane.registerKeyboardAction(this, "undo", javax.swing.KeyStroke.getKeyStroke(90, 2), 2); // Ctrl + Z shortcut
+        contentPane.registerKeyboardAction(this, "redo", javax.swing.KeyStroke.getKeyStroke(89, 2), 2); // Ctrl + Y shortcut
 
         this.searchDialog = new SearchDialog(this);
 
@@ -364,7 +366,11 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
                             setPyramidLoaded(true);
                         }
                         else if (chooser.getSelectedFile().isDirectory()){
-                            File[] txtFiles = chooser.getSelectedFile().listFiles((dir, filename) -> filename.endsWith(".txt"));
+                            File[] txtFiles = chooser.getSelectedFile().listFiles(new FilenameFilter() {
+                                public boolean accept(File dir, String filename) {
+                                    return filename.endsWith(".txt");
+                                }
+                            });
                             if (txtFiles.length > 0) {
                                 StringBuffer buffer = new StringBuffer();
                                 String line;
@@ -1501,20 +1507,20 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
         javax.swing.JMenu editMenu = new javax.swing.JMenu("Edit");
         editMenu.setMnemonic('e');
 
-        JMenuItem editFindMenuItem = new JMenuItem("Find...     Ctrl+F");
+        JMenuItem editFindMenuItem = new JMenuItem("Find...       Ctrl+F");
         editFindMenuItem.setMnemonic('f');
         editFindMenuItem.setActionCommand("find");
         editFindMenuItem.addActionListener(this);
         editMenu.add(editFindMenuItem);
 
-        this.editUndoMenuItem = new JMenuItem("Undo");
+        this.editUndoMenuItem = new JMenuItem("Undo...     Ctrl+Z");
         this.editUndoMenuItem.setMnemonic('u');
         this.editUndoMenuItem.setActionCommand("undo");
         this.editUndoMenuItem.addActionListener(this);
         this.editUndoMenuItem.setEnabled(false);
         editMenu.add(this.editUndoMenuItem);
 
-        this.editRedoMenuItem = new JMenuItem("Redo");
+        this.editRedoMenuItem = new JMenuItem("Redo...     Ctrl+Y");
         this.editRedoMenuItem.setMnemonic('r');
         this.editRedoMenuItem.setActionCommand("redo");
         this.editRedoMenuItem.addActionListener(this);
