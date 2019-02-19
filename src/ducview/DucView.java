@@ -1,6 +1,7 @@
 package ducview;
 
 import javax.swing.*;
+import javax.xml.crypto.dsig.XMLSignContext;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -1126,11 +1127,11 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
         buffer.append("                   comment CDATA #IMPLIED>").append(eol);
         buffer.append(getPyramidDTD());
         buffer.append(" <!ELEMENT score (");
-        for (String tag : XMLScoreTags) {
-            buffer.append(tag + ", ");
+        for (int i = 0; i < XMLScoreTags.length; i++) {
+            buffer.append(XMLScoreTags[i] + ", ");
         }
-        for (String tag : optionalXMLScoreTags) {
-            buffer.append(tag + "?, ");
+        for (int i = 0; i < optionalXMLScoreTags.length; i++) {
+            buffer.append(optionalXMLScoreTags[i] + "?, ");
         }
         buffer.setLength(buffer.length() - 2); // Remove extra comma
         buffer.append(")>").append(eol);
