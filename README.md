@@ -6,7 +6,7 @@ ranks the importance of each content unit based on the frequency in "wise crowd"
 be a gold standard). The pyramid can then be used to judge other summaries, called "peer" summaries.
 
 ## Requirements
-Java 1.4 or higher.
+Java 8 or higher.
 
 ## Features
 Create pyramids and export them in XML. <br />
@@ -60,7 +60,7 @@ The XML contains the pyramid, the peer annotation, and the score of the peer sum
 - During peer annotation, displays the text of the model summaries; when an SCU in the center pane is selected, its contributors are highlighted in the right pane.
 #### Buttons:
 - New SCU: This applies only to pyramid annotation; after user selects text in the right pane, creates a new SCU in the left pane.
-- Add Contributor: This button has two functions during pyramid annotation. It will add a contributor to an existing SCU, after user simultaneously selects text in the right pane, and an SCU in the left pane. For discontinuous contributors, it will add selected text to a selected contributor.
+- Add Contributor: This button has two functions during pyramid annotation. It will add a contributor to an existing SCU, after user simultaneously selects text in the right pane, and an SCU in the left pane. For discontinuous contributors, it will add selected text to a selected contributor (select the contributor, not the SCU label to add a discontinuous contributor).
   - During peer annotation, select this button after selecting some text and the SCU label it matches.
 - Change Label: This applies only to pyramid annotation; allows user to edit the label
 - Set SCU Label: This applies only to pyramid annotation; after selecting a contributor label, hit this button to copy the contributor label to the SCU label.
@@ -69,7 +69,7 @@ The XML contains the pyramid, the peer annotation, and the score of the peer sum
 - Collapse: Collapses the tree of SCUs so that only the labels are visible.
 - Comment: For user notes on SCUs or contributors; appears in the SCU tree as an asterisk on SCU or contributor labels; visible by mousing over the asterisk.
 #### Shortcuts:
-- Many buttons and drop down menu items can be accessed using key shortcuts consisting of ALT + KEY, where KEY is the underlined letter on the button or menu item. For instance, ALT + N will work as the "New SCU" button.
+- Many buttons and drop down menu items can be accessed using key shortcuts consisting of ALT + KEY, where KEY is the underlined letter on the button or menu item. For instance, ALT + N will work as the "New SCU" button. Ctrl + F, Ctrl + Z, and CTRL + Y can be used to find, undo, and redo, respectively.
 
 ## API
 This section contains an overview of the most important classes in the project and their functions. <br />
