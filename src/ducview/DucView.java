@@ -1,10 +1,8 @@
 package ducview;
 
 import javax.swing.*;
-import javax.xml.crypto.dsig.XMLSignContext;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.regex.Matcher;
@@ -46,7 +44,8 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
     private boolean isPeerModified = false;
     private java.io.File pyramidFile = null;
     private java.io.File peerFile = null;
-    private JMenuItem fileNewPyramidMenuItem;
+    private JMenuItem fileNewPyramidFromTextFileMenuItem;
+    private JMenuItem fileNewPyramidFromFolderMenuItem;
     private JMenuItem fileLoadPyramidMenuItem;
     private JMenuItem fileSavePyramidMenuItem;
     private JMenuItem fileSavePyramidAsMenuItem;
@@ -344,12 +343,12 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
             help.setOpaque(false);
             javax.swing.JOptionPane.showMessageDialog(this, help, "About DucView v. 1.5", 1);
 
-        } else if (e.getActionCommand().equals("fileNewPyramid")) {
+        } else if (e.getActionCommand().equals("fileNewPyramidFromTextFile")) {
 
             if ((!this.isPyramidModified) || (saveModifiedPyramid())) {
                 javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(this.defaultFilePath);
-                chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-                chooser.setDialogTitle("Choose the initial text file or a folder containing text files");
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setDialogTitle("Choose the initial text file");
                 if (chooser.showOpenDialog(this) == 0) {
                     try {
                         if (chooser.getSelectedFile().isFile()) {
@@ -366,51 +365,72 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
                             this.pyramidFile = null;
                             setPyramidLoaded(true);
                         }
-                        else if (chooser.getSelectedFile().isDirectory()){
-                            File[] txtFiles = chooser.getSelectedFile().listFiles(new FilenameFilter() {
-                                public boolean accept(File dir, String filename) {
-                                    return filename.endsWith(".txt");
-                                }
-                            });
-                            if (txtFiles.length > 0) {
-                                StringBuffer buffer = new StringBuffer();
-                                String line;
-                                for (File file : txtFiles) {
-                                    buffer.append("-------------------- < " + file.getName() + " > -----");
+                    } catch (java.io.IOException ex) {
+                        ex.printStackTrace();
+                        msg(ex.getMessage());
+                    }
+                }
+            }
+        } else if (e.getActionCommand().equals("fileNewPyramidFromFolder")) {
 
-                                    // Make the header width equal based on file name length
-                                    int fileNameWidth = SwingUtilities.computeStringWidth(pyramidTextPane.getFontMetrics(pyramidTextPane.getFont()), file.getName());
-                                    int remainingWidth = SwingUtilities.computeStringWidth(pyramidTextPane.getFontMetrics(pyramidTextPane.getFont()), "-----------------------------------") - fileNameWidth;
-                                    int dashWidth = SwingUtilities.computeStringWidth(pyramidTextPane.getFontMetrics(pyramidTextPane.getFont()), "-");
-                                    for (int i = 0; i < remainingWidth; i += dashWidth) {
-                                        buffer.append("-");
-                                    }
-
-                                    buffer.append("\n\n");
-                                    java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file));
-                                    while ((line = reader.readLine()) != null) {
-                                        buffer.append(line);
-                                        buffer.append("\n");
-                                    }
-                                    buffer.append("\n\n");
-                                }
-                                this.pyramidInputTextFile = chooser.getSelectedFile().getName();
-                                this.pyramidTextPane.loadText(buffer.toString().replaceAll("\n\n\n\n+-----", "\n\n\n-----")); // Get rid of any new lines at ends of .txt files
-
-                                this.startDocumentPatternStr = "-----+ <.*> -----+";
-                                initializeStartDocumentIndexes(this.startDocumentPatternStr);
-
-                                this.pyramidTree.reset();
-                                this.setTitle(titleString + " - Pyramid: " + chooser.getSelectedFile());
-                                msg("Loaded folder " + chooser.getSelectedFile() + ". Successfully loaded " + this.startDocumentIndexes.length + " *.txt files.");
-                                this.defaultFilePath = chooser.getSelectedFile().getCanonicalPath();
-                                this.pyramidFile = null;
-                                setPyramidLoaded(true);
+            if ((!this.isPyramidModified) || (saveModifiedPyramid())) {
+                javax.swing.JFileChooser chooser = new javax.swing.JFileChooser(this.defaultFilePath);
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                chooser.addChoosableFileFilter(new FileFilter() {
+                    public boolean accept(File file) {
+                        if (file.isDirectory()) { return true; }
+                        else { return false; }
+                    }
+                    public String getDescription() {
+                        return "Folders";
+                    }
+                });
+                chooser.setAcceptAllFileFilterUsed(false);
+                chooser.setDialogTitle("Choose a folder containing text files");
+                if (chooser.showOpenDialog(this) == 0) {
+                    try {
+                        File[] txtFiles = chooser.getSelectedFile().listFiles(new FilenameFilter() {
+                            public boolean accept(File dir, String filename) {
+                                return filename.endsWith(".txt");
                             }
-                            else {
-                                showError("Error", "Error: no *.txt files found in " + chooser.getSelectedFile().getCanonicalPath() + ".");
-                                msg("No *.txt files found in " + chooser.getSelectedFile().getCanonicalPath() + ".");
+                        });
+                        if (txtFiles.length > 0) {
+                            StringBuffer buffer = new StringBuffer();
+                            String line;
+                            for (File file : txtFiles) {
+                                buffer.append("-------------------- < " + file.getName() + " > -----");
+
+                                // Make the header width equal based on file name length
+                                int fileNameWidth = SwingUtilities.computeStringWidth(pyramidTextPane.getFontMetrics(pyramidTextPane.getFont()), file.getName());
+                                int remainingWidth = SwingUtilities.computeStringWidth(pyramidTextPane.getFontMetrics(pyramidTextPane.getFont()), "-----------------------------------") - fileNameWidth;
+                                int dashWidth = SwingUtilities.computeStringWidth(pyramidTextPane.getFontMetrics(pyramidTextPane.getFont()), "-");
+                                for (int i = 0; i < remainingWidth; i += dashWidth) {
+                                    buffer.append("-");
+                                }
+
+                                buffer.append("\n\n");
+                                java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file));
+                                while ((line = reader.readLine()) != null) {
+                                    buffer.append(line);
+                                    buffer.append("\n");
+                                }
+                                buffer.append("\n\n");
                             }
+                            this.pyramidInputTextFile = chooser.getSelectedFile().getName();
+                            this.pyramidTextPane.loadText(buffer.toString().replaceAll("\n\n\n\n+-----", "\n\n\n-----")); // Get rid of any new lines at ends of .txt files
+
+                            this.startDocumentPatternStr = "-----+ <.*> -----+";
+                            initializeStartDocumentIndexes(this.startDocumentPatternStr);
+
+                            this.pyramidTree.reset();
+                            this.setTitle(titleString + " - Pyramid: " + chooser.getSelectedFile());
+                            msg("Loaded folder " + chooser.getSelectedFile() + ". Successfully loaded " + this.startDocumentIndexes.length + " *.txt files.");
+                            this.defaultFilePath = chooser.getSelectedFile().getCanonicalPath();
+                            this.pyramidFile = null;
+                            setPyramidLoaded(true);
+                        } else {
+                            showError("Error", "Error: no *.txt files found in " + chooser.getSelectedFile().getCanonicalPath() + ".");
+                            msg("No *.txt files found in " + chooser.getSelectedFile().getCanonicalPath() + ".");
                         }
                     } catch (java.io.IOException ex) {
                         ex.printStackTrace();
@@ -1299,7 +1319,8 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
     private void setPeerLoaded(boolean isLoaded) {
         this.isPeerLoaded = isLoaded;
 
-        this.fileNewPyramidMenuItem.setEnabled(!isLoaded);
+        this.fileNewPyramidFromTextFileMenuItem.setEnabled(!isLoaded);
+        this.fileNewPyramidFromFolderMenuItem.setEnabled(!isLoaded);
         this.fileLoadPyramidMenuItem.setEnabled(!isLoaded);
         this.fileClosePyramidMenuItem.setEnabled(!isLoaded);
         this.fileShowPeerAnnotationScoreMenuItem.setEnabled(isLoaded);
@@ -1415,11 +1436,22 @@ public class DucView extends javax.swing.JFrame implements java.awt.event.Action
         javax.swing.JMenu pyramidMenu = new javax.swing.JMenu("Pyramid");
         pyramidMenu.setMnemonic('y');
 
-        this.fileNewPyramidMenuItem = new JMenuItem("New...");
-        this.fileNewPyramidMenuItem.setMnemonic('n');
-        this.fileNewPyramidMenuItem.setActionCommand("fileNewPyramid");
-        this.fileNewPyramidMenuItem.addActionListener(this);
-        pyramidMenu.add(this.fileNewPyramidMenuItem);
+        javax.swing.JMenu newPyramidMenu = new javax.swing.JMenu("New...");
+        newPyramidMenu.setMnemonic('n');
+
+        this.fileNewPyramidFromTextFileMenuItem = new JMenuItem("From text file");
+        this.fileNewPyramidFromTextFileMenuItem.setMnemonic('f');
+        this.fileNewPyramidFromTextFileMenuItem.setActionCommand("fileNewPyramidFromTextFile");
+        this.fileNewPyramidFromTextFileMenuItem.addActionListener(this);
+        newPyramidMenu.add(this.fileNewPyramidFromTextFileMenuItem);
+
+        this.fileNewPyramidFromFolderMenuItem = new JMenuItem("From folder of text files");
+        this.fileNewPyramidFromFolderMenuItem.setMnemonic('r');
+        this.fileNewPyramidFromFolderMenuItem.setActionCommand("fileNewPyramidFromFolder");
+        this.fileNewPyramidFromFolderMenuItem.addActionListener(this);
+        newPyramidMenu.add(this.fileNewPyramidFromFolderMenuItem);
+
+        pyramidMenu.add(newPyramidMenu);
 
         this.fileLoadPyramidMenuItem = new JMenuItem("Load...");
         this.fileLoadPyramidMenuItem.setMnemonic('l');
