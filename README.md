@@ -18,7 +18,8 @@ for guides on annotating pyramids and peer summaries.<br />
 
 DUCView is an annotation tool that has had two uses: the creation of pyramids from model summaries, and the annotation of peer summaries against an existing pyramid.
 
-To start creating a new pyramid, select File > Pyramid > New. Select either a folder containing text files, or a single text file.
+To start creating a new pyramid, select File > Pyramid > New. Select either a single text file with several model summaries,
+or a folder containing several text files with one model summary in each file.
 - Folder was selected: DucView will identify any text file within the selected folder as a model summary and concatenate the files into a single file for you.
 - File was selected: The file must contain model summaries delimited by a common symbol, and it must be identified in Options > Document Header RegEx so DucView knows how many summaries are there.
 
@@ -39,7 +40,11 @@ it should still be scored. Select the SCU "All non-matching SCUs go here" and ad
 Once all SCUs in the peer summary have been annotated, save the peer annotation in an XML format as a .pyr file using File > Peer Annotation > Save.
 The XML contains the pyramid, the peer annotation, and the score of the peer summary.
 
+### DucView: Pyramid View Diagram
+![Pyramid View](Images/pyramid_diagram.png?raw=true "Pyramid View")
 
+### DucView: Peer Annotation View Diagram
+![Peer Annotation View](Images/peer_annotation_diagram.png?raw=true "Peer Annotation View")
 
 
 #### Drop Down Menus:
@@ -47,7 +52,7 @@ The XML contains the pyramid, the peer annotation, and the score of the peer sum
 - Edit: There are find, undo and redo functions.
 - Options: "Text Size" and "Look and Feel" are self-explanatory. During pyramid annotation, SCUs in the right pane can be dragged, either to move to a new location in the tree (e.g., to group similar SCUs together for ease of reference), or to merge two SCUs. See warning for an explanation of "Document Header RegEx," and the regular expression to use.
 - Help: About DucView
-#### Bottom Bar:
+#### Status Bar:
 - A bar at the bottom of the window for displaying important information and errors.
 #### Left Pane:
 - During pyramid annotation, displays the file of model summaries. During peer annotation, displays the peer summary.
@@ -68,6 +73,7 @@ The XML contains the pyramid, the peer annotation, and the score of the peer sum
 - Order: Orders the list of SCUs by weight (descending), and within each weight, alphabetically. If you have used "Options > Dragging SCU > Moves it under target SCU" to create your own ordering, hitting the "Order" button will override it.
 - Collapse: Collapses the tree of SCUs so that only the labels are visible.
 - Comment: For user notes on SCUs or contributors; appears in the SCU tree as an asterisk on SCU or contributor labels; visible by mousing over the asterisk.
+- < and >: This applies only to peer annotation; cycle through the contributors to the selected SCU label in the model summaries on the right pane.
 #### Shortcuts:
 - Many buttons and drop down menu items can be accessed using key shortcuts consisting of ALT + KEY, where KEY is the underlined letter on the button or menu item. For instance, ALT + N will work as the "New SCU" button. Ctrl + F, Ctrl + Z, and CTRL + Y can be used to find, undo, and redo, respectively.
 
